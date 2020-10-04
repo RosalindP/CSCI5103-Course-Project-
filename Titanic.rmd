@@ -1,0 +1,103 @@
+---
+title: "Titanic.rmd"
+author: "Wei Qi Pang"
+date: "9/29/2020"
+output: html_document
+---
+
+
+## I perform this chunk of code becuase we must load the ggplot2 and dataset at the beginning. 
+```{r}
+library(readr)
+train = read_csv("train.csv")
+train
+library(ggplot2)
+```
+
+## In this step, I want to know what kinds of variables are in this dataset, in order to decide which kind of variable I would use. 
+## Here are 12 variables, included "PassengerID", "Survived", "Pclass", "Name", "Sex", "Age", "SibSp", "Parch", "Ticket", "Fare", "Cabin", and "Embarked".
+```{r}
+names(train)
+```
+
+## In this R Code Chunk, I use summary() and to summary the Age and Fare in order to get minimum, 1st quartile, 3rd quartile, median, mean, and maximum value. Also, I use boxplot to visualize these values.
+## In this statistic analysis, the Maximum Fare price is 512.33. The youngest passenger is 0.42 year old, and the oldest passenger is 80 years old. However, 177 passengers' age are not avaliable in this dataset. There are 7 passengers under 1 year old and 22 passengers above 60 years old.
+```{r}
+summary(train$Fare)
+summary(train$Age)
+summary(train$Age < 1)
+summary(train$Age  > 60)
+
+boxplot(train$Age,
+main = "Statistic values of Age", xlab = "years", ylab = "Age",col = "blue",border = "brown", horizontal = TRUE, notch = TRUE)
+
+boxplot(train$Fare,main = "Statistic values of Fare", xlab = "Price", ylab = "Fare", col = "blue",border = "brown",horizontal = TRUE,notch = TRUE)
+```
+
+## In this R code chunk, I would like to know how many people are in each Fare price range, and which range had the most people. 
+## The Fare range between 25 and 75 had the most people, and the Fare price aound 500 had the least people. According to graph, male passenger account for the largest part whose Faire price is between 25 and 75.  
+```{r}
+ggplot(aes(x=Fare),data=train)+
+geom_histogram(binwidth = 50)+
+  scale_x_continuous(limits=c(0,550), breaks=seq(0,600,50))+
+  facet_wrap(~Sex)
+```
+
+## This R Chunk is associated with next histograms.
+## I would like to answer the following questions:
+## 1.What is the total number of male passenger? 577
+## 2.What is the total number of female passenger? 314
+## 3.What is the total survived number? 342
+## 4.What is the total number of death? 549
+## 5.What is the total survived number of male passenger? 109
+## 6.What is the total death number of male passenger? 468
+## 7.What is the total survived number of female passenger? 233
+## 8.What is the total death number of female passenger? 81
+## In conclusion, this dataset had more male passenger records. The number of death is higher than the survived number.
+```{r}
+length(train$Survived[train$Sex=="male"])
+length(train$Survived[train$Sex=="female"])
+summary(train$Survived == 1)
+length(train$Survived[train$Sex=="male"][train$Survived[train$Sex=="male"]==1])
+length(train$Survived[train$Sex=="male"][train$Survived[train$Sex=="male"]==0])
+length(train$Survived[train$Sex=="female"][train$Survived[train$Sex=="female"]==1])
+length(train$Survived[train$Sex=="female"][train$Survived[train$Sex=="female"]==0])
+
+```
+
+## In these two histograms, I would like to answer which gender has more deaths and which gender has more survived? 
+## According to the graphs, male passenger had a higher number of death than female passenger' s number of death. The graph shows more female passenger had more survived number.
+```{r}
+hist(train$Survived[train$Sex=='male'], main="Total survived number of male", xlab = 'survived chance',ylab = 'Frequency',col='blue' )
+hist(train$Survived[train$Sex=='female'], main="Total survived of number female",xlab = 'survived chance',ylab = 'Frequency',col='blue' ) 
+
+```
+
+## This R Chunk is associated with next histograms.
+## I would like to answer these following questions:
+## 1. What is the total survived number of Pclass 1? 136
+## 2. What is the total number of death of Pclass 1? 80
+## 3. What is the total survived number of Pclass 2? 87
+## 4. What is the total number of death of Pclass 2? 97
+## 5. What is the total survived number of Pclass 3? 119
+## 6. What is the total number of death of Pclass 3? 372
+## 7. What are the total numbers of Pclass 1, 2, and 3? 216, 184, 491
+## In conclusion, Pclass 3 had the most passenger' records of death and survived number.
+```{r}
+length(train$Survived[train$Pclass=="1"][train$Survived[train$Pclass=="1"]==1])
+length(train$Survived[train$Pclass=="1"][train$Survived[train$Pclass=="1"]==0])
+length(train$Survived[train$Pclass=="2"][train$Survived[train$Pclass=="2"]==1])
+length(train$Survived[train$Pclass=="2"][train$Survived[train$Pclass=="2"]==0])
+length(train$Survived[train$Pclass=="3"][train$Survived[train$Pclass=="3"]==1])
+length(train$Survived[train$Pclass=="3"][train$Survived[train$Pclass=="3"]==0])
+
+table(train$Pclass)
+```
+
+## In these three historgrams, I would like to anwser compare the deaths and the survived among 3 Pclasses.
+## Pclass 1 had more survived number than Pclass 3, the lower the class was, the lower survived number.
+```{r}
+hist(train$Survived[train$Pclass=='1'], main="Total survived number of Pclass 1",xlab = 'survived chance',ylab = 'Frequency')
+hist(train$Survived[train$Pclass=='2'], main="Total survived number of Pclass 2",xlab = 'survived chance',ylab = 'Frequency')
+hist(train$Survived[train$Pclass=='3'], main="Total survived number of Pclass 3",xlab = 'survived chance',ylab = 'Frequency')
+```
